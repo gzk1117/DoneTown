@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 export type TaskCategory = "Study" | "Work" | "Health" | "Life";
+export type TaskKind = "ShortTimed" | "ShortTarget" | "LongTerm" | "Count";
 export type TaskDifficulty = "Easy" | "Medium" | "Hard";
 export type TaskStatus = "ToDo" | "Done" | "Abandoned" | "Archived";
 export type BuildingMaterial = "wood" | "stone" | "brick";
@@ -9,6 +10,7 @@ export type BuildingMaterial = "wood" | "stone" | "brick";
 export interface SubTask {
   id: string;
   title: string;
+  weight: number;
   isDone: boolean;
   createdAt: number;
   completedAt?: number;
@@ -35,8 +37,14 @@ export interface Task {
   id: string;
   title: string;
   category: TaskCategory;
+  kind: TaskKind;
   difficulty: TaskDifficulty;
   subTasks: SubTask[];
+  startAt?: number;
+  endAt?: number;
+  deadlineAt?: number;
+  countGoal?: number;
+  countCurrent?: number;
   repeatRule: RepeatRule;
   reminder?: Reminder;
   status: TaskStatus;
@@ -75,8 +83,14 @@ export interface HomeProgress {
 export interface CreateTaskInput {
   title: string;
   category?: TaskCategory;
+  kind?: TaskKind;
   difficulty?: TaskDifficulty;
-  subTasks?: string[];
+  subTasks?: Array<string | { title: string; weight: number }>;
+  startAt?: number;
+  endAt?: number;
+  deadlineAt?: number;
+  countGoal?: number;
+  countCurrent?: number;
   repeatRule?: RepeatRule;
   reminder?: Reminder;
   reward?: Partial<TaskReward>;
@@ -85,8 +99,14 @@ export interface CreateTaskInput {
 export interface UpdateTaskInput {
   title?: string;
   category?: TaskCategory;
+  kind?: TaskKind;
   difficulty?: TaskDifficulty;
   subTasks?: SubTask[];
+  startAt?: number;
+  endAt?: number;
+  deadlineAt?: number;
+  countGoal?: number;
+  countCurrent?: number;
   repeatRule?: RepeatRule;
   reminder?: Reminder;
 }
@@ -116,6 +136,7 @@ export interface DoneTownState {
   archiveTask: (taskId: string) => void;
   reopenTask: (taskId: string) => void;
   toggleSubTask: (taskId: string, subTaskId: string) => void;
+  updateCountProgress: (taskId: string, countCurrent: number) => void;
 
   addRecord: (input: CreateRecordInput) => EchoRecord;
   deleteRecord: (recordId: string) => void;
@@ -169,6 +190,9 @@ const difficultyWeights: Record<TaskDifficulty, number> = {
   Hard: 3,
 };
 
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
+
 export const getHomeBuildCost = (homeLevel: number) => ({
   coins: 20 + homeLevel * 10,
   materials: {
@@ -186,9 +210,15 @@ const createId = () => {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 };
 
-const createSubTask = (title: string): SubTask => ({
+const createSubTask = (
+  subTask: string | { title: string; weight: number },
+): SubTask => ({
   id: createId(),
-  title: title.trim(),
+  title: typeof subTask === "string" ? subTask.trim() : subTask.title.trim(),
+  weight:
+    typeof subTask === "string"
+      ? 1
+      : clamp(Number.isFinite(subTask.weight) ? subTask.weight : 1, 0, 100),
   isDone: false,
   createdAt: Date.now(),
 });
@@ -276,13 +306,29 @@ const normalizeLegacyCategory = (category: unknown): TaskCategory => {
   return "Life";
 };
 
+const normalizeLegacyKind = (kind: unknown): TaskKind => {
+  if (
+    kind === "ShortTimed" ||
+    kind === "ShortTarget" ||
+    kind === "LongTerm" ||
+    kind === "Count"
+  ) {
+    return kind;
+  }
+
+  return "ShortTarget";
+};
+
 const migrateTask = (rawTask: Partial<Task> & Record<string, unknown>): Task => {
   const now = Date.now();
   const difficulty = normalizeLegacyDifficulty(rawTask.difficulty ?? rawTask.priority);
-  const subTasks = Array.isArray(rawTask.subTasks)
-    ? rawTask.subTasks.map((item) => {
+  const rawSubTasks = Array.isArray(rawTask.subTasks) ? rawTask.subTasks : [];
+  const legacySubTaskWeight =
+    rawSubTasks.length > 0 ? Math.round(100 / rawSubTasks.length) : 0;
+  const subTasks = rawSubTasks.length > 0
+    ? rawSubTasks.map((item) => {
         if (typeof item === "string") {
-          return createSubTask(item);
+          return createSubTask({ title: item, weight: legacySubTaskWeight });
         }
 
         const subTask = item as Partial<SubTask>;
@@ -290,6 +336,13 @@ const migrateTask = (rawTask: Partial<Task> & Record<string, unknown>): Task => 
         return {
           id: subTask.id ?? createId(),
           title: subTask.title?.trim() ?? "",
+          weight: clamp(
+            typeof subTask.weight === "number"
+              ? subTask.weight
+              : legacySubTaskWeight,
+            0,
+            100,
+          ),
           isDone: subTask.isDone ?? false,
           createdAt: subTask.createdAt ?? now,
           completedAt: subTask.completedAt,
@@ -304,8 +357,19 @@ const migrateTask = (rawTask: Partial<Task> & Record<string, unknown>): Task => 
         ? rawTask.title.slice(0, 50)
         : "\u672a\u547d\u540d\u4efb\u52a1",
     category: normalizeLegacyCategory(rawTask.category),
+    kind: normalizeLegacyKind(rawTask.kind),
     difficulty,
     subTasks,
+    startAt: typeof rawTask.startAt === "number" ? rawTask.startAt : undefined,
+    endAt: typeof rawTask.endAt === "number" ? rawTask.endAt : undefined,
+    deadlineAt:
+      typeof rawTask.deadlineAt === "number" ? rawTask.deadlineAt : undefined,
+    countGoal:
+      typeof rawTask.countGoal === "number" ? Math.max(1, rawTask.countGoal) : undefined,
+    countCurrent:
+      typeof rawTask.countCurrent === "number"
+        ? Math.max(0, rawTask.countCurrent)
+        : undefined,
     repeatRule: rawTask.repeatRule ?? { type: "None" },
     reminder: rawTask.reminder,
     status: normalizeLegacyStatus(rawTask.status),
@@ -340,16 +404,30 @@ export const useDoneTownStore = create<DoneTownState>()(
       addTask: (input) => {
         const now = Date.now();
         const difficulty = input.difficulty ?? "Medium";
+        const kind = input.kind ?? "ShortTarget";
+        const countGoal = Math.max(1, input.countGoal ?? 100);
         const task: Task = {
           id: createId(),
           title: input.title.trim().slice(0, 50),
           category: input.category ?? "Life",
+          kind,
           difficulty,
           subTasks:
             input.subTasks
-              ?.map((title) => title.trim())
-              .filter(Boolean)
+              ?.filter((subTask) =>
+                typeof subTask === "string"
+                  ? Boolean(subTask.trim())
+                  : Boolean(subTask.title.trim()),
+              )
               .map(createSubTask) ?? [],
+          startAt: kind === "ShortTimed" ? input.startAt : undefined,
+          endAt: kind === "ShortTimed" ? input.endAt : undefined,
+          deadlineAt: kind === "LongTerm" ? input.deadlineAt : undefined,
+          countGoal: kind === "Count" ? countGoal : undefined,
+          countCurrent:
+            kind === "Count"
+              ? clamp(input.countCurrent ?? 0, 0, countGoal)
+              : undefined,
           repeatRule: input.repeatRule ?? { type: "None" },
           reminder: input.reminder,
           status: "ToDo",
@@ -491,6 +569,24 @@ export const useDoneTownStore = create<DoneTownState>()(
                 }
               : task,
           ),
+        }));
+      },
+
+      updateCountProgress: (taskId, countCurrent) => {
+        set((state) => ({
+          tasks: state.tasks.map((task) => {
+            if (task.id !== taskId || task.kind !== "Count") {
+              return task;
+            }
+
+            const countGoal = Math.max(1, task.countGoal ?? 1);
+
+            return {
+              ...task,
+              countCurrent: clamp(countCurrent, 0, countGoal),
+              updatedAt: Date.now(),
+            };
+          }),
         }));
       },
 
@@ -665,7 +761,7 @@ export const useDoneTownStore = create<DoneTownState>()(
     {
       name: STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
-      version: 4,
+      version: 5,
       migrate: (persistedState) => {
         const state = persistedState as Partial<DoneTownState> | undefined;
         const initialState = createInitialState();
@@ -725,3 +821,26 @@ export const selectDoneTasks = (state: DoneTownState) =>
 
 export const selectPetExpToNextLevel = (state: DoneTownState) =>
   expToNextLevel(state.pet.level);
+
+export const getTaskProgress = (task: Task) => {
+  if (task.status === "Done") {
+    return 100;
+  }
+
+  if (task.kind === "Count") {
+    const countGoal = Math.max(1, task.countGoal ?? 1);
+
+    return Math.round(clamp(((task.countCurrent ?? 0) / countGoal) * 100, 0, 100));
+  }
+
+  if (task.subTasks.length === 0) {
+    return 0;
+  }
+
+  const completedWeight = task.subTasks.reduce(
+    (sum, subTask) => sum + (subTask.isDone ? Math.max(0, subTask.weight) : 0),
+    0,
+  );
+
+  return Math.round(clamp(completedWeight, 0, 100));
+};

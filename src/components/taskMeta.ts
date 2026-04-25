@@ -1,11 +1,19 @@
 import {
   BookOpen,
   BriefcaseBusiness,
+  CalendarClock,
+  Clock3,
   Dumbbell,
+  Gauge,
   Home,
+  Target,
   type LucideIcon,
 } from "lucide-react";
-import type { TaskCategory, TaskDifficulty } from "../store/useDoneTownStore";
+import type {
+  TaskCategory,
+  TaskDifficulty,
+  TaskKind,
+} from "../store/useDoneTownStore";
 
 export type CategoryFilterValue = "All" | TaskCategory;
 
@@ -70,6 +78,43 @@ export const difficultyOptions: Array<{
   },
 ];
 
+export const taskKindOptions: Array<{
+  value: TaskKind;
+  label: string;
+  shortLabel: string;
+  icon: LucideIcon;
+  className: string;
+}> = [
+  {
+    value: "ShortTimed",
+    label: "\u77ed\u671f\u9650\u65f6\u4efb\u52a1",
+    shortLabel: "\u9650\u65f6",
+    icon: Clock3,
+    className: "bg-cyan-50 text-cyan-700 ring-cyan-100",
+  },
+  {
+    value: "ShortTarget",
+    label: "\u77ed\u671f\u8fbe\u6807\u6027\u4efb\u52a1",
+    shortLabel: "\u8fbe\u6807",
+    icon: Target,
+    className: "bg-emerald-50 text-emerald-700 ring-emerald-100",
+  },
+  {
+    value: "LongTerm",
+    label: "\u957f\u671f\u4efb\u52a1",
+    shortLabel: "\u957f\u671f",
+    icon: CalendarClock,
+    className: "bg-indigo-50 text-indigo-700 ring-indigo-100",
+  },
+  {
+    value: "Count",
+    label: "\u8ba1\u6570\u4efb\u52a1",
+    shortLabel: "\u8ba1\u6570",
+    icon: Gauge,
+    className: "bg-orange-50 text-orange-700 ring-orange-100",
+  },
+];
+
 export const getCategoryMeta = (category: TaskCategory) =>
   categoryOptions.find((option) => option.value === category) ??
   categoryOptions[categoryOptions.length - 1];
@@ -77,3 +122,7 @@ export const getCategoryMeta = (category: TaskCategory) =>
 export const getDifficultyMeta = (difficulty: TaskDifficulty) =>
   difficultyOptions.find((option) => option.value === difficulty) ??
   difficultyOptions[1];
+
+export const getTaskKindMeta = (kind: TaskKind) =>
+  taskKindOptions.find((option) => option.value === kind) ??
+  taskKindOptions[1];
