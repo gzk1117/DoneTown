@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { CategoryFilter } from "./CategoryFilter";
-import { TaskAddInput } from "./TaskAddInput";
 import { TodoTaskList } from "./TodoTaskList";
 import type { CategoryFilterValue } from "./taskMeta";
 import type { Task } from "../store/useDoneTownStore";
@@ -35,7 +34,6 @@ export function TaskPanel({
 
       <div className="min-h-0 flex-1 overflow-y-auto pb-12 pr-1 lg:pb-0">
         <div className="space-y-4">
-          <TaskAddInput />
           <CategoryFilter
             onChange={setSelectedCategory}
             selectedCategory={selectedCategory}

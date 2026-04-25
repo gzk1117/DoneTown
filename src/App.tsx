@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Check } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import { GalleryModal } from "./components/GalleryModal";
 import { GameStage } from "./components/GameStage";
 import { RecordModal } from "./components/RecordModal";
 import { ShopModal } from "./components/ShopModal";
 import { SideNav } from "./components/SideNav";
+import { TaskCreatePage } from "./components/TaskCreatePage";
 import { TaskPanel } from "./components/TaskPanel";
 import { TopBar } from "./components/TopBar";
 import type { Task } from "./store/useDoneTownStore";
@@ -15,6 +16,7 @@ function App() {
   const [mobileView, setMobileView] = useState<"tasks" | "island">("tasks");
   const [isShopOpen, setIsShopOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [isTaskCreatorOpen, setIsTaskCreatorOpen] = useState(false);
   const [notice, setNotice] = useState("");
   const noticeTimerRef = useRef<number | null>(null);
   const mobilePagerRef = useRef<HTMLDivElement | null>(null);
@@ -112,6 +114,11 @@ function App() {
     );
   };
 
+  const handleTaskCreated = () => {
+    setIsTaskCreatorOpen(false);
+    showNotice("\u4efb\u52a1\u5df2\u6dfb\u52a0");
+  };
+
   return (
     <main className="flex h-screen w-screen flex-col overflow-hidden bg-gray-50 text-slate-900">
       <TopBar
@@ -168,6 +175,17 @@ function App() {
         </button>
       </div>
 
+      {!isTaskCreatorOpen && (
+        <button
+          aria-label={"\u6253\u5f00\u4efb\u52a1\u6dfb\u52a0\u9875\u9762"}
+          className="fixed bottom-12 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 text-white shadow-xl shadow-slate-900/25 transition hover:-translate-y-0.5 hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300"
+          onClick={() => setIsTaskCreatorOpen(true)}
+          type="button"
+        >
+          <Plus className="h-7 w-7" />
+        </button>
+      )}
+
       {notice && (
         <div className="pointer-events-none fixed left-1/2 top-20 z-[60] -translate-x-1/2 animate-[bounce_1s_ease-in-out_1] rounded-full border border-white/70 bg-slate-950 px-4 py-2 text-sm font-medium text-white shadow-xl shadow-slate-900/20">
           {notice}
@@ -188,6 +206,11 @@ function App() {
       <GalleryModal
         isOpen={isGalleryOpen}
         onClose={() => setIsGalleryOpen(false)}
+      />
+      <TaskCreatePage
+        isOpen={isTaskCreatorOpen}
+        onClose={() => setIsTaskCreatorOpen(false)}
+        onTaskCreated={handleTaskCreated}
       />
     </main>
   );

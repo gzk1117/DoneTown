@@ -30,7 +30,11 @@ const toTimestamp = (value: string) => {
   return Number.isNaN(timestamp) ? undefined : timestamp;
 };
 
-export function TaskAddInput() {
+interface TaskAddInputProps {
+  onTaskCreated?: () => void;
+}
+
+export function TaskAddInput({ onTaskCreated }: TaskAddInputProps) {
   const addTask = useDoneTownStore((state) => state.addTask);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<TaskCategory>("Study");
@@ -90,6 +94,7 @@ export function TaskAddInput() {
           : [],
     });
     resetForm();
+    onTaskCreated?.();
   };
 
   const updateSubTask = (
