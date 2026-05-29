@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">DoneTown</string>
+    <string name="title_activity_main">DoneTown</string>
+    <string name="package_name">com.donetown.app</string>
+    <string name="custom_url_scheme">com.donetown.app</string>
+</resources>
