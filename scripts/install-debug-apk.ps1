@@ -35,9 +35,9 @@ if (-not (Test-Path -LiteralPath $resolvedApkPath)) {
 $sdkRoot = Resolve-AndroidSdk
 $adb = Join-Path $sdkRoot "platform-tools\adb.exe"
 $devicesOutput = & $adb devices -l
-$connectedDevices = $devicesOutput | Where-Object { $_ -match "\tdevice(\s|$)" }
-$unauthorizedDevices = $devicesOutput | Where-Object { $_ -match "\tunauthorized(\s|$)" }
-$offlineDevices = $devicesOutput | Where-Object { $_ -match "\toffline(\s|$)" }
+$connectedDevices = $devicesOutput | Where-Object { $_ -match "^\S+\s+device(\s|$)" }
+$unauthorizedDevices = $devicesOutput | Where-Object { $_ -match "^\S+\s+unauthorized(\s|$)" }
+$offlineDevices = $devicesOutput | Where-Object { $_ -match "^\S+\s+offline(\s|$)" }
 
 if ($unauthorizedDevices) {
   Write-Output "Android device is connected but USB debugging is not authorized."
