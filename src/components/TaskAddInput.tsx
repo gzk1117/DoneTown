@@ -50,6 +50,8 @@ export function TaskAddInput({ onTaskCreated }: TaskAddInputProps) {
   ]);
 
   const allowSubTasks = kind !== "Count";
+  const allowDeadline =
+    kind === "ShortTarget" || kind === "LongTerm" || kind === "Count";
   const subTaskWeightTotal = useMemo(
     () => subTasks.reduce((sum, subTask) => sum + Number(subTask.weight || 0), 0),
     [subTasks],
@@ -118,7 +120,7 @@ export function TaskAddInput({ onTaskCreated }: TaskAddInputProps) {
 
   return (
     <form
-      className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm"
+      className="rounded-[1.5rem] bg-[rgba(255,253,247,0.72)] p-3"
       onSubmit={handleSubmit}
     >
       <div className="grid gap-3">
@@ -127,7 +129,7 @@ export function TaskAddInput({ onTaskCreated }: TaskAddInputProps) {
         </label>
         <input
           id="task-title"
-          className="min-h-11 rounded-md border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-slate-100"
+          className="dt-input px-4 text-sm font-bold placeholder:text-[rgba(86,58,37,0.42)]"
           maxLength={50}
           onChange={(event) => setTitle(event.target.value)}
           placeholder={"\u6dfb\u52a0\u4e00\u4e2a\u4efb\u52a1\uff0c\u6700\u591a 50 \u5b57"}
@@ -200,20 +202,25 @@ export function TaskAddInput({ onTaskCreated }: TaskAddInputProps) {
           </div>
         )}
 
-        {kind === "LongTerm" && (
+        {allowDeadline && (
           <DateTimeInput
             id="task-deadline-at"
-            label={"\u622a\u6b62\u65f6\u95f4"}
+            label={
+              kind === "LongTerm"
+                ? "\u622a\u6b62\u65f6\u95f4"
+                : "\u53ef\u9009\u622a\u6b62\u65f6\u95f4"
+            }
             onChange={setDeadlineAt}
             value={deadlineAt}
           />
         )}
 
         {kind === "Count" && (
-          <label className="grid gap-1 text-xs font-medium text-slate-500">
+          <label className="grid gap-1 text-xs font-black text-[var(--dt-muted)]">
             {"\u603b\u6570\u91cf"}
             <input
-              className="min-h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
+              className="dt-input px-3 text-sm font-bold"
+              inputMode="numeric"
               min={1}
               onChange={(event) =>
                 setCountGoal(Math.max(1, Number(event.target.value) || 1))
@@ -225,15 +232,15 @@ export function TaskAddInput({ onTaskCreated }: TaskAddInputProps) {
         )}
 
         {allowSubTasks && (
-          <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-3">
-            <label className="flex items-center justify-between gap-3 text-sm font-medium text-slate-700">
+          <div className="rounded-[1.35rem] border-2 border-[rgba(128,83,42,0.14)] bg-[#fff8e7]/80 p-3">
+            <label className="flex items-center justify-between gap-3 text-sm font-black text-[var(--dt-ink)]">
               <span className="inline-flex items-center gap-2">
-                <Split className="h-4 w-4 text-sky-500" />
+                <Split className="h-4 w-4 text-[#3c8db7]" />
                 {"\u62c6\u89e3\u4e3a\u5b50\u4efb\u52a1"}
               </span>
               <input
                 checked={useSubTasks}
-                className="h-4 w-4 rounded border-slate-300 text-slate-950"
+                className="h-5 w-5 rounded border-[rgba(128,83,42,0.24)] accent-[#ff8a65]"
                 onChange={(event) => setUseSubTasks(event.target.checked)}
                 type="checkbox"
               />
@@ -247,7 +254,7 @@ export function TaskAddInput({ onTaskCreated }: TaskAddInputProps) {
                     key={subTask.id}
                   >
                     <input
-                      className="min-h-9 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
+                      className="dt-input min-h-10 px-3 text-sm font-bold"
                       onChange={(event) =>
                         updateSubTask(subTask.id, { title: event.target.value })
                       }
@@ -256,7 +263,8 @@ export function TaskAddInput({ onTaskCreated }: TaskAddInputProps) {
                     />
                     <input
                       aria-label={"\u5b50\u4efb\u52a1\u5360\u6bd4"}
-                      className="min-h-9 rounded-md border border-slate-200 bg-white px-2 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
+                      className="dt-input min-h-10 px-2 text-sm font-bold"
+                      inputMode="numeric"
                       max={100}
                       min={0}
                       onChange={(event) =>
@@ -269,7 +277,7 @@ export function TaskAddInput({ onTaskCreated }: TaskAddInputProps) {
                     />
                     <button
                       aria-label={"\u5220\u9664\u5b50\u4efb\u52a1"}
-                      className="flex h-9 w-9 items-center justify-center rounded-md text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
+                      className="dt-icon-button dt-focus flex h-10 w-10 items-center justify-center text-[#9d5064]"
                       onClick={() => removeSubTask(subTask.id)}
                       type="button"
                     >
@@ -278,12 +286,12 @@ export function TaskAddInput({ onTaskCreated }: TaskAddInputProps) {
                   </div>
                 ))}
 
-                <div className="flex items-center justify-between gap-2 text-xs text-slate-400">
+                <div className="flex items-center justify-between gap-2 text-xs font-bold text-[var(--dt-muted)]">
                   <span>
                     {"\u5f53\u524d\u5360\u6bd4\u5408\u8ba1"} {subTaskWeightTotal}%
                   </span>
                   <button
-                    className="font-medium text-slate-600 hover:text-slate-950"
+                    className="font-black text-[#df7a32] transition hover:text-[#b85a33]"
                     onClick={() =>
                       setSubTasks((currentSubTasks) => [
                         ...currentSubTasks,
@@ -301,7 +309,7 @@ export function TaskAddInput({ onTaskCreated }: TaskAddInputProps) {
         )}
 
         <button
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-slate-950 px-4 text-sm font-medium text-white transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:bg-slate-300"
+          className="dt-primary-button dt-focus inline-flex items-center justify-center gap-2 px-4 text-sm"
           disabled={!title.trim()}
           type="submit"
         >
@@ -329,10 +337,10 @@ function SelectField({
   children,
 }: SelectFieldProps) {
   return (
-    <label className="grid gap-1 text-xs font-medium text-slate-500" htmlFor={id}>
+    <label className="grid gap-1 text-xs font-black text-[var(--dt-muted)]" htmlFor={id}>
       {label}
       <select
-        className="min-h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
+        className="dt-input px-3 text-sm font-bold"
         id={id}
         onChange={(event) => onChange(event.target.value)}
         value={value}
@@ -352,10 +360,10 @@ interface DateTimeInputProps {
 
 function DateTimeInput({ id, label, value, onChange }: DateTimeInputProps) {
   return (
-    <label className="grid gap-1 text-xs font-medium text-slate-500" htmlFor={id}>
+    <label className="grid gap-1 text-xs font-black text-[var(--dt-muted)]" htmlFor={id}>
       {label}
       <input
-        className="min-h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
+        className="dt-input px-3 text-sm font-bold"
         id={id}
         onChange={(event) => onChange(event.target.value)}
         type="datetime-local"

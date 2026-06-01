@@ -31,12 +31,14 @@ export function TodoTaskList({
 
   if (todoTasks.length === 0) {
     return (
-      <div className="flex min-h-56 flex-col items-center justify-center rounded-lg border border-dashed border-slate-200 bg-white px-6 text-center">
-        <Inbox className="mb-3 h-8 w-8 text-slate-300" />
-        <p className="text-sm font-medium text-slate-700">
+      <div className="dt-story-card dt-drawn-border flex min-h-56 flex-col items-center justify-center px-6 text-center">
+        <div className="dt-float-soft mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#fff0cb] text-[#c97832]">
+          <Inbox className="h-8 w-8" />
+        </div>
+        <p className="text-base font-black text-[var(--dt-ink)]">
           {"\u5f53\u524d\u6ca1\u6709\u5f85\u529e\u4efb\u52a1"}
         </p>
-        <p className="mt-1 text-xs text-slate-400">
+        <p className="mt-1 text-sm font-semibold text-[var(--dt-muted)]">
           {"\u6dfb\u52a0\u4e00\u4e2a\u4efb\u52a1\uff0c\u8ba9\u5c0f\u9547\u5f00\u59cb\u8fd0\u8f6c\u3002"}
         </p>
       </div>
@@ -88,14 +90,16 @@ function TaskCard({ task, onComplete, onAbandon }: TaskCardProps) {
   return (
     <article
       className={[
-        "relative overflow-hidden rounded-lg border bg-white text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md",
+        "dt-story-card dt-pop-in relative overflow-hidden text-left transition hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(111,70,33,0.14)]",
         progressTone.borderClassName,
       ].join(" ")}
     >
-      <div className={["absolute inset-0", progressTone.trackClassName].join(" ")} />
+      <div
+        className={["absolute inset-0 opacity-75", progressTone.trackClassName].join(" ")}
+      />
       <div
         className={[
-          "absolute inset-y-0 left-0 transition-all duration-500",
+          "absolute inset-y-0 left-0 rounded-r-[2rem] transition-all duration-500",
           progressTone.fillClassName,
         ].join(" ")}
         style={{ width: `${progress}%` }}
@@ -103,89 +107,89 @@ function TaskCard({ task, onComplete, onAbandon }: TaskCardProps) {
 
       <div className="relative p-4">
         <div className="flex gap-3">
-        <button
-          aria-label={`${"\u5b8c\u6210\u4efb\u52a1"}: ${task.title}`}
-          className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/80 bg-white/85 text-slate-500 shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-600 focus:outline-none focus:ring-4 focus:ring-emerald-100"
-          onClick={onComplete}
-          type="button"
-        >
-          <Check className="h-4 w-4" />
-        </button>
+          <button
+            aria-label={`${"\u5b8c\u6210\u4efb\u52a1"}: ${task.title}`}
+            className="dt-icon-button dt-focus mt-1 flex h-11 w-11 shrink-0 items-center justify-center bg-white/90 text-[#4f9b62]"
+            onClick={onComplete}
+            type="button"
+          >
+            <Check className="h-5 w-5" />
+          </button>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              className={[
-                "inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset",
-                category.badgeClassName,
-              ].join(" ")}
-            >
-              <CategoryIcon className="h-3.5 w-3.5" />
-              {category.label}
-            </span>
-            <span
-              className={[
-                "inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset",
-                kind.className,
-              ].join(" ")}
-            >
-              <KindIcon className="h-3.5 w-3.5" />
-              {kind.shortLabel}
-            </span>
-            <span
-              className={[
-                "inline-flex rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset",
-                difficulty.className,
-              ].join(" ")}
-            >
-            {difficulty.label}
-            </span>
-          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span
+                className={[
+                  "dt-sticker inline-flex items-center gap-1.5 px-2 py-1 text-xs font-extrabold ring-1 ring-inset",
+                  category.badgeClassName,
+                ].join(" ")}
+              >
+                <CategoryIcon className="h-3.5 w-3.5" />
+                {category.label}
+              </span>
+              <span
+                className={[
+                  "dt-sticker inline-flex items-center gap-1.5 px-2 py-1 text-xs font-extrabold ring-1 ring-inset",
+                  kind.className,
+                ].join(" ")}
+              >
+                <KindIcon className="h-3.5 w-3.5" />
+                {kind.shortLabel}
+              </span>
+              <span
+                className={[
+                  "dt-sticker inline-flex px-2 py-1 text-xs font-extrabold ring-1 ring-inset",
+                  difficulty.className,
+                ].join(" ")}
+              >
+                {difficulty.label}
+              </span>
+            </div>
 
             <div className="mt-3 flex items-start justify-between gap-3">
-              <h2 className="break-words text-base font-semibold leading-6 text-slate-950">
+              <h2 className="break-words text-lg font-black leading-6 text-[var(--dt-ink)]">
                 {task.title}
               </h2>
-              <span className="shrink-0 text-lg font-semibold tabular-nums text-slate-950">
+              <span className="dt-sticker shrink-0 px-2.5 py-1 text-base font-black tabular-nums text-[var(--dt-ink)]">
                 {progress}%
               </span>
             </div>
 
-            <p className="mt-1 text-xs font-medium text-slate-500">
+            <p className="mt-1 text-xs font-bold text-[var(--dt-muted)]">
               {getTaskScheduleText(task)}
             </p>
 
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-            <span className="inline-flex items-center gap-1 rounded-md bg-slate-50 px-2 py-1">
-              <Coins className="h-3.5 w-3.5 text-amber-500" />
-              {"\u661f\u5e01"} +{task.reward.coins}
-            </span>
-            {materialReward && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-slate-50 px-2 py-1">
-                <Hammer className="h-3.5 w-3.5 text-slate-500" />
-                {materialReward}
+            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-bold text-[var(--dt-muted)]">
+              <span className="dt-sticker inline-flex items-center gap-1 px-2 py-1">
+                <Coins className="h-3.5 w-3.5 text-[#c97832]" />
+                {"\u661f\u5e01"} +{task.reward.coins}
               </span>
-            )}
-            {task.subTasks.length > 0 && (
-              <span className="rounded-md bg-slate-50 px-2 py-1">
-                {"\u5b50\u4efb\u52a1"} {finishedSubTasks}/{task.subTasks.length}
-              </span>
-            )}
+              {materialReward && (
+                <span className="dt-sticker inline-flex items-center gap-1 px-2 py-1">
+                  <Hammer className="h-3.5 w-3.5 text-[#8a5527]" />
+                  {materialReward}
+                </span>
+              )}
+              {task.subTasks.length > 0 && (
+                <span className="dt-sticker px-2 py-1">
+                  {"\u5b50\u4efb\u52a1"} {finishedSubTasks}/{task.subTasks.length}
+                </span>
+              )}
+            </div>
           </div>
+
+          <button
+            className="dt-soft-button dt-focus h-11 shrink-0 px-3 text-xs font-extrabold text-[var(--dt-muted)]"
+            onClick={onAbandon}
+            type="button"
+          >
+            {"\u653e\u5f03"}
+          </button>
         </div>
 
-        <button
-          className="h-8 shrink-0 rounded-md bg-white/60 px-2 text-xs font-medium text-slate-500 transition hover:bg-white hover:text-slate-700"
-          onClick={onAbandon}
-          type="button"
-        >
-          {"\u653e\u5f03"}
-        </button>
-      </div>
-
         {task.kind === "Count" && (
-          <div className="mt-3 rounded-md border border-white/70 bg-white/75 p-3 shadow-sm">
-            <div className="mb-2 flex items-center justify-between gap-3 text-xs font-medium text-slate-600">
+          <div className="mt-3 rounded-[1.25rem] border-2 border-white/70 bg-white/70 p-3 shadow-[0_8px_18px_rgba(111,70,33,0.08)]">
+            <div className="mb-2 flex items-center justify-between gap-3 text-xs font-extrabold text-[var(--dt-muted)]">
               <span>{"\u5b9e\u65f6\u8fdb\u5ea6"}</span>
               <span className="tabular-nums">
                 {countCurrent}/{countGoal}
@@ -194,7 +198,7 @@ function TaskCard({ task, onComplete, onAbandon }: TaskCardProps) {
             <div className="grid grid-cols-[1fr_4.5rem] items-center gap-3">
               <input
                 aria-label={"\u8c03\u6574\u8ba1\u6570\u4efb\u52a1\u8fdb\u5ea6"}
-                className="w-full accent-cyan-500"
+                className="w-full accent-[#ff8a65]"
                 max={countGoal}
                 min={0}
                 onChange={(event) =>
@@ -205,7 +209,8 @@ function TaskCard({ task, onComplete, onAbandon }: TaskCardProps) {
               />
               <input
                 aria-label={"\u8f93\u5165\u5df2\u8fbe\u6807\u6570\u91cf"}
-                className="h-9 rounded-md border border-slate-200 bg-white px-2 text-right text-sm tabular-nums text-slate-700 outline-none focus:border-cyan-300 focus:ring-4 focus:ring-cyan-100"
+                className="dt-input h-10 px-2 text-right text-sm tabular-nums"
+                inputMode="numeric"
                 max={countGoal}
                 min={0}
                 onChange={(event) =>
@@ -219,8 +224,8 @@ function TaskCard({ task, onComplete, onAbandon }: TaskCardProps) {
         )}
 
         {task.kind !== "Count" && task.subTasks.length > 0 && (
-          <div className="mt-3 rounded-md border border-white/70 bg-white/75 p-2 shadow-sm">
-            <div className="mb-2 flex items-center justify-between px-1 text-xs font-medium text-slate-500">
+          <div className="mt-3 rounded-[1.25rem] border-2 border-white/70 bg-white/70 p-2 shadow-[0_8px_18px_rgba(111,70,33,0.08)]">
+            <div className="mb-2 flex items-center justify-between px-1 text-xs font-extrabold text-[var(--dt-muted)]">
               <span>{"\u5b50\u4efb\u52a1\u8fdb\u5ea6"}</span>
               <span>
                 {finishedSubTasks}/{task.subTasks.length}
@@ -229,7 +234,7 @@ function TaskCard({ task, onComplete, onAbandon }: TaskCardProps) {
             <div className="space-y-1.5">
               {task.subTasks.map((subTask) => (
                 <button
-                  className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-50"
+                  className="dt-squish flex min-h-11 w-full items-center gap-2 rounded-2xl px-2 py-2 text-left text-sm font-bold text-[var(--dt-ink)] transition hover:bg-[#fff8e7]"
                   key={subTask.id}
                   onClick={() => toggleSubTask(task.id, subTask.id)}
                   type="button"
@@ -238,8 +243,8 @@ function TaskCard({ task, onComplete, onAbandon }: TaskCardProps) {
                     className={[
                       "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
                       subTask.isDone
-                        ? "border-emerald-500 bg-emerald-500 text-white"
-                        : "border-slate-300 bg-white text-transparent",
+                        ? "border-[#4f9b62] bg-[#9bdc86] text-[#24442a]"
+                        : "border-[rgba(128,83,42,0.22)] bg-white text-transparent",
                     ].join(" ")}
                   >
                     <Check className="h-3.5 w-3.5" />
@@ -247,12 +252,12 @@ function TaskCard({ task, onComplete, onAbandon }: TaskCardProps) {
                   <span
                     className={[
                       "min-w-0 flex-1 break-words",
-                      subTask.isDone ? "text-slate-400 line-through" : "",
+                      subTask.isDone ? "text-[var(--dt-muted)] line-through" : "",
                     ].join(" ")}
                   >
                     {subTask.title}
                   </span>
-                  <span className="shrink-0 text-xs tabular-nums text-slate-400">
+                  <span className="shrink-0 text-xs tabular-nums text-[var(--dt-muted)]">
                     {subTask.weight}%
                   </span>
                 </button>
@@ -280,24 +285,24 @@ const progressTones: Record<
   }
 > = {
   Study: {
-    borderClassName: "border-sky-100 hover:border-sky-200",
-    trackClassName: "bg-sky-100/80",
-    fillClassName: "bg-cyan-300/80",
+    borderClassName: "border-[#bde9ff]/70 hover:border-[#7cc9ec]",
+    trackClassName: "bg-[#e4f6ff]",
+    fillClassName: "bg-[#bde9ff]/90",
   },
   Work: {
-    borderClassName: "border-violet-100 hover:border-violet-200",
-    trackClassName: "bg-violet-100/75",
-    fillClassName: "bg-fuchsia-200/90",
+    borderClassName: "border-[#d9ccff]/70 hover:border-[#b7a5f3]",
+    trackClassName: "bg-[#f0eaff]",
+    fillClassName: "bg-[#d9ccff]/90",
   },
   Health: {
-    borderClassName: "border-emerald-100 hover:border-emerald-200",
-    trackClassName: "bg-emerald-100/75",
-    fillClassName: "bg-teal-300/80",
+    borderClassName: "border-[#c4edb6]/70 hover:border-[#9bdc86]",
+    trackClassName: "bg-[#e8f8df]",
+    fillClassName: "bg-[#9bdc86]/85",
   },
   Life: {
-    borderClassName: "border-amber-100 hover:border-amber-200",
-    trackClassName: "bg-amber-100/75",
-    fillClassName: "bg-orange-200/90",
+    borderClassName: "border-[#ffd56b]/70 hover:border-[#f2b94d]",
+    trackClassName: "bg-[#fff0cb]",
+    fillClassName: "bg-[#ffd56b]/90",
   },
 };
 
@@ -321,8 +326,14 @@ const getTaskScheduleText = (task: Task) => {
   }
 
   if (task.kind === "Count") {
-    return `${"\u76ee\u6807\u6570\u91cf"} ${Math.max(1, task.countGoal ?? 1)}`;
+    const targetText = `${"\u76ee\u6807\u6570\u91cf"} ${Math.max(1, task.countGoal ?? 1)}`;
+
+    return task.deadlineAt
+      ? `${targetText} · ${"\u622a\u6b62"} ${formatDateTime(task.deadlineAt)}`
+      : targetText;
   }
 
-  return "\u65e0\u9700\u9650\u65f6\uff0c\u4e13\u6ce8\u8fbe\u6807";
+  return task.deadlineAt
+    ? `${"\u622a\u6b62"} ${formatDateTime(task.deadlineAt)}`
+    : "\u65e0\u9700\u9650\u65f6\uff0c\u4e13\u6ce8\u8fbe\u6807";
 };

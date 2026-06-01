@@ -253,6 +253,9 @@ const normalizeReward = (
   };
 };
 
+const taskKindSupportsDeadline = (kind: TaskKind) =>
+  kind === "ShortTarget" || kind === "LongTerm" || kind === "Count";
+
 const applyPetExp = (pet: PetProgress, amount: number): PetProgress => {
   let level = pet.level;
   let exp = pet.exp + Math.max(0, amount);
@@ -262,7 +265,7 @@ const applyPetExp = (pet: PetProgress, amount: number): PetProgress => {
     level += 1;
   }
 
-  return { level, exp };
+  return { ...pet, level, exp };
 };
 
 const normalizeLegacyStatus = (status: unknown): TaskStatus => {
@@ -422,7 +425,9 @@ export const useDoneTownStore = create<DoneTownState>()(
               .map(createSubTask) ?? [],
           startAt: kind === "ShortTimed" ? input.startAt : undefined,
           endAt: kind === "ShortTimed" ? input.endAt : undefined,
-          deadlineAt: kind === "LongTerm" ? input.deadlineAt : undefined,
+          deadlineAt: taskKindSupportsDeadline(kind)
+            ? input.deadlineAt
+            : undefined,
           countGoal: kind === "Count" ? countGoal : undefined,
           countCurrent:
             kind === "Count"
@@ -715,6 +720,11 @@ export const useDoneTownStore = create<DoneTownState>()(
 
       buildHome: () => {
         const state = get();
+
+        if (state.home.level >= 3) {
+          return false;
+        }
+
         const cost = getHomeBuildCost(state.home.level);
         const materials = state.resources.materials;
 
@@ -761,7 +771,7 @@ export const useDoneTownStore = create<DoneTownState>()(
     {
       name: STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
-      version: 5,
+      version: 7,
       migrate: (persistedState) => {
         const state = persistedState as Partial<DoneTownState> | undefined;
         const initialState = createInitialState();
@@ -793,8 +803,14 @@ export const useDoneTownStore = create<DoneTownState>()(
             },
           },
           pet: {
-            ...initialState.pet,
-            ...state?.pet,
+            level:
+              typeof state?.pet?.level === "number"
+                ? state.pet.level
+                : initialState.pet.level,
+            exp:
+              typeof state?.pet?.exp === "number"
+                ? state.pet.exp
+                : initialState.pet.exp,
           },
           home: {
             ...initialState.home,

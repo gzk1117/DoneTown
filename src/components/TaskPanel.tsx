@@ -19,29 +19,31 @@ export function TaskPanel({
   return (
     <section
       className={[
-        "flex min-h-0 flex-col bg-yellow-50/70 p-4 shadow-[10px_0_30px_rgba(148,163,184,0.12)]",
+        "flex min-h-0 flex-col bg-[rgba(255,247,232,0.62)] p-4 shadow-[10px_0_30px_rgba(111,70,33,0.08)] backdrop-blur sm:p-6",
         className,
       ].join(" ")}
     >
-      <div className="mb-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-amber-600">
-          DoneTown
-        </p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950">
-          {"\u4eca\u65e5\u4efb\u52a1"}
-        </h1>
-      </div>
+      <div className="mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col">
+        <div className="dt-paper-panel dt-drawn-border mb-4 px-4 py-4">
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-[#df7a32]">
+            DoneTown
+          </p>
+          <h1 className="mt-1 text-3xl font-black tracking-tight text-[var(--dt-ink)]">
+            {"\u4eca\u65e5\u4efb\u52a1"}
+          </h1>
+        </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto pb-12 pr-1 lg:pb-0">
-        <div className="space-y-4">
-          <CategoryFilter
-            onChange={setSelectedCategory}
-            selectedCategory={selectedCategory}
-          />
-          <TodoTaskList
-            onRequestComplete={onRequestComplete}
-            selectedCategory={selectedCategory}
-          />
+        <div className="min-h-0 flex-1 overflow-y-auto pb-24 pr-1 lg:pb-2">
+          <div className="space-y-4">
+            <CategoryFilter
+              onChange={setSelectedCategory}
+              selectedCategory={selectedCategory}
+            />
+            <TodoTaskList
+              onRequestComplete={onRequestComplete}
+              selectedCategory={selectedCategory}
+            />
+          </div>
         </div>
       </div>
     </section>

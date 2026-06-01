@@ -30,29 +30,29 @@ export const categoryOptions: CategoryOption[] = [
     value: "Study",
     label: "\u5b66\u4e60",
     icon: BookOpen,
-    iconClassName: "text-sky-600",
-    badgeClassName: "bg-sky-50 text-sky-700 ring-sky-100",
+    iconClassName: "text-[#3c8db7]",
+    badgeClassName: "bg-[#e4f6ff] text-[#2d6e91] ring-[#bde9ff]",
   },
   {
     value: "Work",
     label: "\u5de5\u4f5c",
     icon: BriefcaseBusiness,
-    iconClassName: "text-violet-600",
-    badgeClassName: "bg-violet-50 text-violet-700 ring-violet-100",
+    iconClassName: "text-[#7b62b8]",
+    badgeClassName: "bg-[#f0eaff] text-[#654ba4] ring-[#d9ccff]",
   },
   {
     value: "Health",
     label: "\u5065\u5eb7",
     icon: Dumbbell,
-    iconClassName: "text-emerald-600",
-    badgeClassName: "bg-emerald-50 text-emerald-700 ring-emerald-100",
+    iconClassName: "text-[#4f9b62]",
+    badgeClassName: "bg-[#e8f8df] text-[#3f7a4a] ring-[#c4edb6]",
   },
   {
     value: "Life",
     label: "\u751f\u6d3b",
     icon: Home,
-    iconClassName: "text-amber-600",
-    badgeClassName: "bg-amber-50 text-amber-800 ring-amber-100",
+    iconClassName: "text-[#c97832]",
+    badgeClassName: "bg-[#fff0cb] text-[#8a5527] ring-[#ffd56b]",
   },
 ];
 
@@ -64,17 +64,17 @@ export const difficultyOptions: Array<{
   {
     value: "Easy",
     label: "\u7b80\u5355",
-    className: "bg-emerald-50 text-emerald-700 ring-emerald-100",
+    className: "bg-[#e8f8df] text-[#3f7a4a] ring-[#c4edb6]",
   },
   {
     value: "Medium",
     label: "\u4e2d\u7b49",
-    className: "bg-amber-50 text-amber-800 ring-amber-100",
+    className: "bg-[#fff0cb] text-[#8a5527] ring-[#ffd56b]",
   },
   {
     value: "Hard",
     label: "\u56f0\u96be",
-    className: "bg-rose-50 text-rose-700 ring-rose-100",
+    className: "bg-[#ffe7ed] text-[#9d5064] ring-[#ffbed0]",
   },
 ];
 
@@ -90,28 +90,28 @@ export const taskKindOptions: Array<{
     label: "\u77ed\u671f\u9650\u65f6\u4efb\u52a1",
     shortLabel: "\u9650\u65f6",
     icon: Clock3,
-    className: "bg-cyan-50 text-cyan-700 ring-cyan-100",
+    className: "bg-[#e4f6ff] text-[#2d6e91] ring-[#bde9ff]",
   },
   {
     value: "ShortTarget",
     label: "\u77ed\u671f\u8fbe\u6807\u6027\u4efb\u52a1",
     shortLabel: "\u8fbe\u6807",
     icon: Target,
-    className: "bg-emerald-50 text-emerald-700 ring-emerald-100",
+    className: "bg-[#e8f8df] text-[#3f7a4a] ring-[#c4edb6]",
   },
   {
     value: "LongTerm",
     label: "\u957f\u671f\u4efb\u52a1",
     shortLabel: "\u957f\u671f",
     icon: CalendarClock,
-    className: "bg-indigo-50 text-indigo-700 ring-indigo-100",
+    className: "bg-[#f0eaff] text-[#654ba4] ring-[#d9ccff]",
   },
   {
     value: "Count",
     label: "\u8ba1\u6570\u4efb\u52a1",
     shortLabel: "\u8ba1\u6570",
     icon: Gauge,
-    className: "bg-orange-50 text-orange-700 ring-orange-100",
+    className: "bg-[#fff0cb] text-[#8a5527] ring-[#ffd56b]",
   },
 ];
 

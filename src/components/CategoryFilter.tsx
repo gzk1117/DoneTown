@@ -15,10 +15,10 @@ export function CategoryFilter({
     <div className="scrollbar-none flex gap-2 overflow-x-auto pb-1">
       <button
         className={[
-          "inline-flex min-h-10 shrink-0 items-center gap-2 rounded-md border px-3 text-sm font-medium transition",
+          "dt-squish inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border-2 px-3 text-sm font-extrabold transition",
           selectedCategory === "All"
-            ? "border-slate-900 bg-slate-900 text-white"
-            : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50",
+            ? "border-[#8a5137] bg-[#ffb17f] text-[#4b2719] shadow-[0_6px_0_rgba(182,90,48,0.22)]"
+            : "border-[rgba(128,83,42,0.14)] bg-[rgba(255,253,247,0.86)] text-[var(--dt-muted)] shadow-[0_6px_14px_rgba(111,70,33,0.08)] hover:bg-white",
         ].join(" ")}
         onClick={() => onChange("All")}
         type="button"
@@ -34,10 +34,10 @@ export function CategoryFilter({
         return (
           <button
             className={[
-              "inline-flex min-h-10 shrink-0 items-center gap-2 rounded-md border px-3 text-sm font-medium transition",
+              "dt-squish inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border-2 px-3 text-sm font-extrabold transition",
               isActive
-                ? "border-slate-900 bg-slate-900 text-white"
-                : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50",
+                ? "border-[#8a5137] bg-[#ffb17f] text-[#4b2719] shadow-[0_6px_0_rgba(182,90,48,0.22)]"
+                : "border-[rgba(128,83,42,0.14)] bg-[rgba(255,253,247,0.86)] text-[var(--dt-muted)] shadow-[0_6px_14px_rgba(111,70,33,0.08)] hover:bg-white",
             ].join(" ")}
             key={option.value}
             onClick={() => onChange(option.value)}
