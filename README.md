@@ -12,6 +12,8 @@ DoneTown 是一款童话绘本风的游戏化效率工具 Demo。它把现实待
 
 [DoneTown APK 构建工作流](https://github.com/gzk1117/DoneTown/actions/workflows/build-debug-apk.yml)
 
+如果仓库保持私有，下载链接只对有仓库访问权限的账号可用。要发给没有权限的朋友，需要把仓库设为公开、给对方添加访问权限，或直接发送 APK 文件。
+
 安装说明：
 
 - 安卓手机需要允许安装未知来源应用。
